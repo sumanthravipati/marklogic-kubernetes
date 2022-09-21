@@ -172,6 +172,13 @@ spec:
       {{- end }}
       {{- if or (not .Values.persistence.enabled) (.Values.extraVolumes) }}
       volumes:
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/Europe/Paris
+            type: File
+    volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
         {{- if not .Values.persistence.enabled }}
         - name: datadir
           emptyDir: {}

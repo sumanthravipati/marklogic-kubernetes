@@ -1,7 +1,7 @@
 # Default values for marklogic server.
 
 # Number of Marklogic nodes
-replicaCount: 1
+replicaCount: 3
 
 # Marklogic image parameters
 image:
@@ -48,7 +48,7 @@ nodeSelector: {}
 # If set the enabled to false, it will use EmptyDir volume
 persistence:
   enabled: true
-  storageClass: ""
+  storageClass: "local-path"
   size: 10Gi
   annotations: {}
   accessModes:
@@ -72,6 +72,12 @@ service:
     - protocol: TCP
       name: manage
       port: 8002
+    - protocol: TCP
+      name: test
+      port: 8001
+    - protocol: TCP
+      name: hello-world
+      port: 8021
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
