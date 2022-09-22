@@ -1,0 +1,25 @@
+{{- if .Values.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "haproxy.fullname" . }}
+  namespace: {{ template "haproxy.namespace" . }}
+  labels:
+  {{- include "haproxy.labels" . | nindent 4 }}
+data:
+  haproxy.cfg: |
+  {{ tpl .Values.config . | nindent 4 }}
+{{- end }}
+
+{{- if .Values.includes }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: includes
+  namespace: {{ template "haproxy.namespace" . }}
+data:
+{{- range $key, $val := .Values.includes }}
+  {{ $key }}: | {{ $val | nindent 4 }}
+{{- end }}
+{{- end }}

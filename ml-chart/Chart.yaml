@@ -9,7 +9,16 @@ keywords:
   - marklogic
   - database
   - nosql
+  - haproxy
 sources:
   - https://github.com/marklogic/marklogic-kubernetes
   - https://www.marklogic.com/
+kubeVersion: '>=1.16.0-0'
 version: 1.0.0-ea1
+
+
+dependencies:
+- condition: ml-lb.enabled
+  name: ml-lb
+  version: "2.7"
+  repository: "file://./charts/ml-lb"

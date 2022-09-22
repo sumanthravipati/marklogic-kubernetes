@@ -1,0 +1,711 @@
+
+## Default values for HAProxy
+
+## Configure Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  annotations: {}
+  create: true
+  name:
+
+## Override namespace for for the whole chart
+## If namespaceOverride is set, helm will use it's value instead of .Release.Namespace for all chart components.
+## It is useful in case Haproxy is used as a dependency for another helm chart. Value can be overridden in parent chart values.yaml
+## Example values.yaml of parent chart:
+# namespaceOverride: haproxytech
+
+## Default values for image
+image:
+  repository: haproxytech/haproxy-alpine    # can be changed to use CE or EE images
+  tag: "{{ .Chart.AppVersion }}"
+  pullPolicy: IfNotPresent
+
+## Automatically Roll Deployments
+# ref: https://helm.sh/docs/howto/charts_tips_and_tricks/#automatically-roll-deployments
+checksumConfigMap:
+  enabled: true
+
+## Share Process Namespace between Containers in a Pod
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/
+shareProcessNamespace:
+  enabled: false
+
+## Pods: How Pods manage multiple containers
+# ref: https://kubernetes.io/docs/concepts/workloads/pods/#workload-resources-for-managing-pods
+# ref: https://kubernetes.io/docs/concepts/workloads/pods/#how-pods-manage-multiple-containers
+sidecarContainers: []
+## Reflex
+# ref: https://github.com/cespare/reflex
+# ref: https://hub.docker.com/r/acim/go-reflex
+# - name: reflex
+#   image: acim/go-reflex:1.17.3
+#   command: ["reflex", "-d", "fancy"]
+#   workingDir: /usr/local/etc/haproxy
+#   args:
+#     - -svr
+#     - "..data"
+#     - --
+#     - bash
+#     - -c
+#     - 'pkill -SIGUSR2 "haproxy|hapee-lb"'
+#   ports:
+#     - name: tcp
+#       containerPort: 3000
+#       protocol: TCP
+#   imagePullPolicy: IfNotPresent
+#   volumeMounts:
+#     - name: haproxy-config
+#       mountPath: /usr/local/etc/haproxy
+#   resources:
+#     limits:
+#       cpu: 100m
+#       memory: 128Mi
+#     requests:
+#       cpu: 50m
+#       memory: 64Mi
+
+## Deployment or DaemonSet pod mode
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+kind: Deployment    # can be 'Deployment' or 'DaemonSet'
+replicaCount: 1   # used only for Deployment mode
+
+## minReadySeconds setting of Deployment or DaemonSet
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#min-ready-seconds
+minReadySeconds: 0
+
+## Command line arguments to pass to HAProxy
+args:
+  enabled: true    # EE images require disabling this due to S6-overlay
+  # ref: http://cbonte.github.io/haproxy-dconv/2.2/management.html#3
+  defaults: ["-f", "/usr/local/etc/haproxy/haproxy.cfg"]
+  extraArgs: []    # EE images require disabling this due to S6-overlay
+
+## Controller Container liveness/readiness probe configuration
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  {}
+  # failureThreshold: 3
+  # successThreshold: 1
+  # initialDelaySeconds: 0
+  # timeoutSeconds: 1
+  # tcpSocket:
+  #   port: 80
+  # periodSeconds: 10
+
+readinessProbe:
+  {}
+  # failureThreshold: 3
+  # successThreshold: 1
+  # initialDelaySeconds: 0
+  # timeoutSeconds: 1
+  # tcpSocket:
+  #   port: 80
+  # periodSeconds: 10
+
+startupProbe:
+  {}
+  # failureThreshold: 20
+  # successThreshold: 1
+  # initialDelaySeconds: 0
+  # timeoutSeconds: 1
+  # tcpSocket:
+  #   port: 80
+  # periodSeconds: 1
+
+## DaemonSet configuration
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+daemonset:
+  useHostNetwork: false   # also modify dnsPolicy accordingly
+  useHostPort: false
+  hostPorts:
+    http: 80
+    https: 443
+    stat: 1024
+
+## Init Containers
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+initContainers: []
+# - name: sysctl
+#   image: "busybox:musl"
+#   command:
+#     - /bin/sh
+#     - -c
+#     - sysctl -w net.core.somaxconn=65536
+#   securityContext:
+#     privileged: true
+
+## Pod termination grace period
+## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+terminationGracePeriodSeconds: 60
+
+## Private Registry configuration
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imageCredentials:
+  registry: null    # EE images require setting this
+  username: null    # EE images require setting this
+  password: null    # EE images require setting this
+existingImagePullSecret: null
+
+## Container listener port configuration
+## ref: https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/
+containerPorts:   # has to match hostPorts when useHostNetwork is true
+  ml-query: 8000
+  ml-admin: 8001
+  ml-manage: 8002
+  hello-world: 8021
+  ml-console-0: 80
+  ml-console-1: 81
+  ml-console-2: 82
+  ml-admin-0: 83
+  ml-admin-1: 84
+  ml-admin-2: 85
+  ml-manage-0: 86
+  ml-manaage-1: 87
+  ml-manage-2: 88
+  https: 443
+  stat: 1024
+
+## Deployment strategy definition
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+strategy: {}
+#  rollingUpdate:
+#    maxSurge: 25%
+#    maxUnavailable: 25%
+#  type: RollingUpdate
+
+## Pod PriorityClass
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: ""
+
+## Container lifecycle handlers
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}
+  ## Example preStop for graceful shutdown
+  # preStop:
+  #   exec:
+  #     command: ["/bin/sh", "-c", "kill -USR1 $(pidof haproxy); while killall -0 haproxy; do sleep 1; done"]
+
+## Additional envs to the main container
+extraEnvs: []
+## Example passing the pod IP into a container
+# - name: POD_IP
+#   valueFrom:
+#     fieldRef:
+#       fieldPath: status.podIP
+
+## Additional volumeMounts to the controller main container
+extraVolumeMounts: []
+## Example empty volume mounts when using securityContext->readOnlyRootFilesystem
+# - name: etc-haproxy
+#   mountPath: /etc/haproxy
+# - name: tmp
+#   mountPath: /tmp
+# - name: var-state-haproxy
+#   mountPath: /var/state/haproxy
+
+## Additional volumes to the controller pod
+extraVolumes: []
+## Example empty volumes when using securityContext->readOnlyRootFilesystem
+# - name: etc-haproxy
+#   emptyDir: {}
+# - name: tmp
+#   emptyDir: {}
+# - name: var-state-haproxy
+#   emptyDir: {}
+
+## HAProxy daemon configuration
+# ref: https://www.haproxy.org/download/2.2/doc/configuration.txt
+config: |
+  global
+    log stdout format raw local0
+    maxconn 1024
+
+  defaults
+    log global
+    option forwardfor
+    timeout client 60s
+    timeout connect 60s
+    timeout server 60s
+
+  resolvers dns
+    nameserver k8s-dns 10.43.0.10:53
+    nameserver resolve-conf 10.43.0.10:53
+
+
+    # Maximum size of a DNS answer allowed, in bytes
+    accepted_payload_size 8192
+
+    # Whether to add nameservers found in /etc/resolv.conf
+    parse-resolv-conf
+
+    # How long to "hold" a backend server's up/down status depending on the name resolution status.
+    # For example, if an NXDOMAIN response is returned, keep the backend server in its current state (up) for
+    # at least another 30 seconds before marking it as down due to DNS not having a record for it.
+    hold valid    10s
+    hold other    30s
+    hold refused  30s
+    hold nx       30s
+    hold timeout  30s
+    hold obsolete 30s
+
+    # How many times to retry a query
+    resolve_retries 3
+
+    # How long to wait between retries when no valid response has been received
+    timeout retry 5s
+
+
+    # How long to wait for a successful resolution
+    timeout resolve 5s
+
+
+  frontend stats
+      mode http
+      bind *:1024
+      stats enable
+      http-request use-service prometheus-exporter if { path /metrics }
+      stats uri /stats
+      stats refresh 10s
+      stats admin if LOCALHOST
+
+  ### Applicative Plane ###
+
+  ## Query Console
+
+  frontend ml-test-query
+    mode http
+    bind :8000
+    #acl path_console path_beg -i /console/
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    #use_backend ml-test-query if path_console
+    default_backend ml-test-query
+
+  backend ml-test-query
+    mode http
+    balance uri
+    option forwardfor
+    #http-request replace-path ^/console(/.*) /\1
+    cookie SERVER insert indirect nocache
+    server ml-0 ml-test-marklogic-0.ml-test-marklogic-headless.ml.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-0-8000
+    server ml-1 ml-test-marklogic-1.ml-test-marklogic-headless.ml.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-1-8000
+    server ml-2 ml-test-marklogic-2.ml-test-marklogic-headless.ml.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-2-8000
+
+  ## Admin UI
+
+  frontend ml-test-admin
+    mode http
+    bind :8001
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-admin
+
+  backend ml-test-admin
+    mode http
+    balance uri
+    #http-request replace-path /admin(/)?(.*) /\2
+    cookie SERVER insert indirect nocache
+    server ml-0 ml-test-marklogic-0.ml-test-marklogic-headless.ml.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-0-8001
+    server ml-1 ml-test-marklogic-1.ml-test-marklogic-headless.ml.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-1-8001
+    server ml-2 ml-test-marklogic-2.ml-test-marklogic-headless.ml.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-2-8001
+
+  ## Hello-World ##
+
+  frontend hello-world
+    mode http
+    bind :8021
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend hello-world
+
+  backend hello-world
+    mode http
+    balance uri
+    #http-request replace-path /admin(/)?(.*) /\2
+    cookie SERVER insert indirect nocache
+    server ml-0 ml-test-marklogic-0.ml-test-marklogic-headless.ml.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-0-8021
+    server ml-1 ml-test-marklogic-1.ml-test-marklogic-headless.ml.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-1-8021
+    server ml-2 ml-test-marklogic-2.ml-test-marklogic-headless.ml.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-2-8021  
+
+  ## Manage 
+
+  frontend ml-test-manage
+    mode http
+    bind :8002
+    #http-request replace-path /dashboard(/)?(.*) /\2
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-manage
+
+  backend ml-test-manage
+    mode http
+    balance uri
+    cookie SERVER insert indirect nocache
+    server ml-0 ml-test-marklogic-0.ml-test-marklogic-headless.ml.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-0-8002
+    server ml-1 ml-test-marklogic-1.ml-test-marklogic-headless.ml.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-1-8002
+    server ml-2 ml-test-marklogic-2.ml-test-marklogic-headless.ml.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-2-8002
+
+  ### Admin Plane ###
+
+  ## Query console
+
+  frontend ml-test-console-0
+    mode http
+    bind :80
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-console-0
+
+  frontend ml-test-console-1
+    mode http
+    bind :81
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-console-1
+
+  frontend ml-test-console-2
+    mode http
+    bind :82
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-console-2
+
+  backend ml-test-console-0
+    mode http
+    server ml-0 ml-test-marklogic-0.ml-test-marklogic-headless.ml.svc.cluster.local:8000 check resolvers dns init-addr none check
+
+  backend ml-test-console-1
+    mode http
+    server ml-1 ml-test-marklogic-1.ml-test-marklogic-headless.ml.svc.cluster.local:8000 check resolvers dns init-addr none check
+
+  backend ml-test-console-2
+    mode http
+    server ml-2 ml-test-marklogic-2.ml-test-marklogic-headless.ml.svc.cluster.local:8000 check resolvers dns init-addr none check
+
+
+  ## Admin UI
+
+  frontend ml-test-admin-0
+    mode http
+    bind :83
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-admin-0
+
+  frontend ml-test-admin-1
+    mode http
+    bind :84
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-admin-1
+
+  frontend ml-test-admin-2
+    mode http
+    bind :85
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-admin-2
+
+  backend ml-test-admin-0
+    mode http
+    server ml-0 ml-test-marklogic-0.ml-test-marklogic-headless.ml.svc.cluster.local:8001 check resolvers dns init-addr none check
+
+  backend ml-test-admin-1
+    mode http
+    server ml-1 ml-test-marklogic-1.ml-test-marklogic-headless.ml.svc.cluster.local:8001 check resolvers dns init-addr none check
+
+  backend ml-test-admin-2
+    mode http
+    server ml-2 ml-test-marklogic-2.ml-test-marklogic-headless.ml.svc.cluster.local:8001 check resolvers dns init-addr none check
+
+
+  ## Manage
+
+  frontend ml-test-manage-0
+    mode http
+    bind :86
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-manage-0
+
+  frontend ml-test-manage-1
+    mode http
+    bind :87
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-manage-1
+
+  frontend ml-test-manage-2
+    mode http
+    bind :88
+    log-format "%ci:%cp [%tr] %ft %b/%s %TR/%Tw/%Tc/%Tr/%Ta %ST %B %CC %CS %tsc %ac/%fc/%bc/%sc/%rc %sq/%bq %hr %hs %{+Q}r"
+    default_backend ml-test-manage-2
+
+  backend ml-test-manage-0
+    mode http
+    server ml-0 ml-test-marklogic-0.ml-test-marklogic-headless.ml.svc.cluster.local:8002 check resolvers dns init-addr none check
+
+  backend ml-test-manage-1
+    mode http
+    server ml-1 ml-test-marklogic-1.ml-test-marklogic-headless.ml.svc.cluster.local:8002 check resolvers dns init-addr none check
+
+  backend ml-test-manage-2
+    mode http
+    server ml-2 ml-test-marklogic-2.ml-test-marklogic-headless.ml.svc.cluster.local:8002 check resolvers dns init-addr none check
+  
+
+## Basic features : Maps
+# ref: http://cbonte.github.io/haproxy-dconv/2.2/configuration.html#7.3.1-map
+# ref: http://cbonte.github.io/haproxy-dconv/2.2/intro.html#3.3.8
+includes:
+  # routes.map: |
+  #   www.example.com/v1     www.example2.com/v2
+  #   api.example.com/v1     api.example2.com/v2
+  #   static.example.com/v1  static.example2.com/v2
+  # 200.http: |
+  #   HTTP/1.1 200 OK
+  #   Cache-Control: no-cache
+  #   Connection: close
+  #   Content-Type: text/html
+  #   <html><body><h1>200 OK</h1>
+  #   Check passed.
+  #   </body></html>
+
+## Mount path includes file and maps
+includesMountPath: /etc/haproxy
+
+## Additional secrets to mount as volumes
+## This is expected to be an array of dictionaries specifying the volume name, secret name and mount path
+mountedSecrets: []
+#  - volumeName: ssl-certificate
+#    secretName: star-example-com
+#    mountPath: /usr/local/etc/ssl
+
+## Pod Node assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+nodeSelector: {}
+
+## Node Taints and Tolerations for pod-node cheduling through attraction/repelling
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+#  - key: "key"
+#    operator: "Equal|Exists"
+#    value: "value"
+#    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+## Node Affinity for pod-node scheduling constraints
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+## Topology spread constraints (only used in kind: Deployment)
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
+# - maxSkew: 1
+#   topologyKey: kubernetes.io/zone
+#   whenUnsatisfiable: DoNotSchedule
+#   labelSelector:
+#     matchLabels:
+#       app.kubernetes.io/name: kubernetes-ingress
+#       app.kubernetes.io/instance: kubernetes-ingress
+
+## Pod DNS Config
+## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+dnsConfig: {}
+
+## Pod DNS Policy
+## Change this to ClusterFirstWithHostNet in case you have useHostNetwork set to true
+## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+dnsPolicy: ClusterFirst
+
+## Additional labels to add to the pod container metadata
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+#  key: value
+
+## Additional annotations to add to the pod container metadata
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+#  key: value
+
+## Enable RBAC Authorization
+## ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+rbac:
+  create: true
+
+## Disableable use of Pod Security Policy
+## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  annotations: {}
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+
+    ### WARNING!!! "Apparmor is only available Ubuntu/Debian distributions of Linux."
+
+    # apparmor.security.beta.kubernetes.io/allowedProfileNames: runtime/default
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: runtime/default
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  enabled: false
+  # ref: https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/
+  # Enable only when added kublet arg: --allowed-unsafe-sysctls strings
+  allowedUnsafeSysctls:
+    # - net.*
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+podSecurityContext: {}
+  ### ref: https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/
+  ### Sysctls enable only when added kublet arg: --allowed-unsafe-sysctls strings
+  # sysctls:
+  #   - name: net.ipv4.tcp_rmem
+  #     value: 4096 16060 262144
+  #   - name: net.ipv4.tcp_wmem
+  #     value: 4096 16384 262144
+  #   - name: net.ipv4.tcp_tw_reuse
+  #     value: "1"
+  #   - name: net.ipv4.ip_local_port_range
+  #     value: 1024 65023
+  #   - name: net.ipv4.tcp_max_syn_backlog
+  #     value: "60000"
+  #   - name: net.ipv4.tcp_fin_timeout
+  #     value: "30"
+  #   - name: net.ipv4.tcp_synack_retries
+  #     value: "3"
+  #   - name: net.ipv4.ip_nonlocal_bind
+  #     value: "1"
+  #   - name: net.core.somaxconn
+  #     value: "60000"
+
+## Container Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext:
+  enabled: false
+  runAsUser: 1000
+  runAsGroup: 1000
+  allowPrivilegeEscalation: true
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - NET_BIND_SERVICE
+  seccompProfile:
+    type: RuntimeDefault
+
+## Compute Resources
+## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+resources:
+#  limits:
+#    cpu: 100m
+#    memory: 64Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi
+
+## Horizontal Pod Scaler
+## Only to be used with Deployment kind
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 7
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+  # additionalMetrics:
+  #   - type: Object
+  #     object:
+  #       metric:
+  #         name: requests-per-second
+  #       describedObject:
+  #         apiVersion: networking.k8s.io/v1
+  #         kind: Ingress
+  #         name: main-route
+  #       target:
+  #         type: Value
+  #         value: 10k
+
+
+## Pod Disruption Budget
+## Only to be used with Deployment kind
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+PodDisruptionBudget:
+  enable: false
+  # maxUnavailable: 1
+  # minAvailable: 1
+
+## Service configuration
+## ref: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  type: NodePort   # can be 'LoadBalancer'
+
+  ## Service ClusterIP
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/
+  clusterIP: ""
+
+  ## LoadBalancer IP
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+  loadBalancerIP: ""
+
+  ## Source IP ranges permitted to access Network Load Balancer
+  # ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/
+  loadBalancerSourceRanges: []
+
+  ## Service ExternalIPs
+  # ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
+  externalIPs: []
+
+  ## Service annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations: {}
+
+  ## Service externalTrafficPolicy
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-traffic-policy
+  # externalTrafficPolicy: Cluster
+
+serviceMonitor:
+  ## Toggle the ServiceMonitor true if you have Prometheus Operator installed and configured
+  enabled: true
+
+  ## Specify the labels to add to the ServiceMonitors to be selected for target discovery
+  extraLabels: {}
+
+  ## Specify the endpoints
+  ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor
+  endpoints:
+    - port: stat
+      path: /metrics
+      scheme: http
+      interval: 30s
+
+## Configure Ingress
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: false
+  servicePort: 80
+
+  ## Ingress class
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class
+  className: "haproxy"
+
+  ## Ingress labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  labels: {}
+
+  ## Ingress annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations:
+    # haproxy.org/balance-algorithm: uri
+    #haproxy.org/path-rewrite: ^/console(/)?(.*) /\1
+    #haproxy.org/app-root: "/"
+    # kubernetes.io/tls-acme: "true"
+
+  ## Ingress hosts
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-rules
+  hosts:
+    - host: localhost
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+          backend: 
+            service:
+              name: haproxy
+              port:
+                number: 8001
+
+  ## Ingress TLS
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  tls: []
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - haproxy.domain.com

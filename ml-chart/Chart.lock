@@ -1,0 +1,6 @@
+dependencies:
+- name: ml-lb
+  repository: file://./charts/ml-lb
+  version: "2.7"
+digest: sha256:c03b23e25d6bf706b9e7d7846edd80748d7aa494f92e1df5f0ccfa691a506324
+generated: "2022-09-22T15:28:20.055646+02:00"
