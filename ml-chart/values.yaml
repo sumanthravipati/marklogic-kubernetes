@@ -445,9 +445,9 @@ ml-lb:
       option forwardfor
       #http-request replace-path ^/console(/.*) /\1
       cookie SERVER insert indirect nocache
-      server {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-0-8000
-      server {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-1-8000
-      server {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-2-8000
+      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-0-8000
+      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-1-8000
+      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-2-8000
 
     ## Admin UI
 
@@ -462,9 +462,9 @@ ml-lb:
       balance uri
       #http-request replace-path /admin(/)?(.*) /\2
       cookie SERVER insert indirect nocache
-      server {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-0-8001
-      server {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-1-8001
-      server {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-2-8001
+      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-0-8001
+      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-1-8001
+      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-2-8001
 
     ## Hello-World ##
 
@@ -479,9 +479,9 @@ ml-lb:
       balance uri
       #http-request replace-path /admin(/)?(.*) /\2
       cookie SERVER insert indirect nocache
-      server {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-0-8021
-      server {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-1-8021
-      server {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-2-8021  
+      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-0-8021
+      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-1-8021
+      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8021 check resolvers dns init-addr none cookie ml-2-8021  
 
     ## Manage 
 
@@ -496,9 +496,10 @@ ml-lb:
       mode http
       balance uri
       cookie SERVER insert indirect nocache
-      server {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-0-8002
-      server {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-1-8002
-      server {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-2-8002
+      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-0-8002
+      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-1-8002
+      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none cookie ml-2-8002
+
 
     ### Admin Plane ###
 
@@ -524,15 +525,15 @@ ml-lb:
 
     backend ml-test-console-0
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none check
+      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none check
 
     backend ml-test-console-1
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none check
+      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none check
 
     backend ml-test-console-2
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none check
+      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none check
 
 
     ## Admin UI
@@ -557,15 +558,15 @@ ml-lb:
 
     backend ml-test-admin-0
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none check
+      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none check
 
     backend ml-test-admin-1
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none check
+      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none check
 
     backend ml-test-admin-2
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none check
+      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none check
 
 
     ## Manage
@@ -590,15 +591,15 @@ ml-lb:
 
     backend ml-test-manage-0
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none check
+      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none check
 
     backend ml-test-manage-1
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none check
+      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none check
 
     backend ml-test-manage-2
       mode http
-      server {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none check
+      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8002 check resolvers dns init-addr none check
     
 
   ## Basic features : Maps
