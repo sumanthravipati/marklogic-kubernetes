@@ -852,50 +852,55 @@ ml-lb:
     ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-rules
     rules:
       - host: localhost
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-            backend: 
-              service:
-                name: haproxy
-                port:
-                  number: 8001
+        http:
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+              backend: 
+                service:
+                  name: haproxy
+                  port:
+                    number: 8001
       - host: localhost
-        paths:
-          - path: /qconsole
-            pathType: ImplementationSpecific
-            backend: 
-              service:
-                name: haproxy
-                port:
-                  number: 8000
+        http:
+          paths:
+            - path: /qconsole
+              pathType: ImplementationSpecific
+              backend: 
+                service:
+                  name: haproxy
+                  port:
+                    number: 8000
       - host: localhost
-        paths:
-          - path: /common
-            pathType: ImplementationSpecific
-            backend: 
-              service:
-                name: haproxy
-                port:
-                  number: 8000
+        http:
+          paths:
+            - path: /common
+              pathType: ImplementationSpecific
+              backend: 
+                service:
+                  name: haproxy
+                  port:
+                    number: 8000
       - host: localhost
-        paths:
-          - path: /dashboard
-            pathType: ImplementationSpecific
-            backend: 
-              service:
-                name: haproxy
-                port:
-                  number: 8002
+        http:
+          paths:
+            - path: /dashboard
+              pathType: ImplementationSpecific
+              backend: 
+                service:
+                  name: haproxy
+                  port:
+                    number: 8002
       - host: localhost
-        paths:
-          - path: /manage
-            pathType: ImplementationSpecific
-            backend: 
-              service:
-                name: haproxy
-                port:
-                  number: 8002
+        http:
+          paths:
+            - path: /manage
+              pathType: ImplementationSpecific
+              backend: 
+                service:
+                  name: haproxy
+                  port:
+                    number: 8002
 
     ## Ingress TLS
     ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
