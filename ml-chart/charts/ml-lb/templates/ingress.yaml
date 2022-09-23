@@ -31,7 +31,7 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}  
   rules:
-    {{- .Values.ingress.rules | toYaml | nindent 8 }} # the number might not be correct and might need to be adjusted
+    {{- .Values.ingress.rules | toYaml | nindent 4 }} # the number might not be correct and might need to be adjusted
   {{- if .Values.ingress.tls }}
   tls:
     {{- toYaml .Values.ingress.tls | nindent 4 }}
