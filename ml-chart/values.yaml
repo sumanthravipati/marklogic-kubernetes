@@ -858,7 +858,7 @@ ml-lb:
               pathType: ImplementationSpecific
               backend: 
                 service:
-                  name: haproxy
+                  name: "{{ $fullName }}"
                   port:
                     number: 8001
       - host: localhost
@@ -868,7 +868,7 @@ ml-lb:
               pathType: ImplementationSpecific
               backend: 
                 service:
-                  name: haproxy
+                  name: "{{ $fullName }}"
                   port:
                     number: 8000
       - host: localhost
@@ -878,7 +878,7 @@ ml-lb:
               pathType: ImplementationSpecific
               backend: 
                 service:
-                  name: haproxy
+                  name: "{{ $fullName }}"
                   port:
                     number: 8000
       - host: localhost
@@ -888,7 +888,7 @@ ml-lb:
               pathType: ImplementationSpecific
               backend: 
                 service:
-                  name: haproxy
+                  name: "{{ $fullName }}"
                   port:
                     number: 8002
       - host: localhost
@@ -898,7 +898,7 @@ ml-lb:
               pathType: ImplementationSpecific
               backend: 
                 service:
-                  name: haproxy
+                  name: "{{ $fullName }}"
                   port:
                     number: 8002
 
