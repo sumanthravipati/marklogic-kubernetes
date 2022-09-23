@@ -690,9 +690,9 @@ ingress:
     #haproxy.org/app-root: "/"
     # kubernetes.io/tls-acme: "true"
 
-  ## Ingress hosts
+  ## Ingress rules
   ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-rules
-  hosts:
+  rules:
     - host: localhost
       paths:
         - path: /
