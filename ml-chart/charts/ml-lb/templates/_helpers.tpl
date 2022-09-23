@@ -36,6 +36,39 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "marklogic.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create headless service name for statefulset
+*/}}
+{{- define "marklogic.headlessServiceName" -}}
+{{- printf "%s-headless" (include "marklogic.fullname" .) }}
+{{- end}}
+
+
+{{/*
+Create URL for headless service 
+*/}}
+{{- define "marklogic.headlessURL" -}}
+{{- printf "%s.%s.svc.cluster.local" (include "marklogic.headlessServiceName" .) .Release.Namespace }}
+{{- end}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "haproxy.chart" -}}
