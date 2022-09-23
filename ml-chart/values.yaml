@@ -888,7 +888,7 @@ ml-lb:
               pathType: ImplementationSpecific
               backend: 
                 service:
-                  name: "{{ $fullName }}"
+                  name: "$fullName"
                   port:
                     number: 8002
       - host: localhost
