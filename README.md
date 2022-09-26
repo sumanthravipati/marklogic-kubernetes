@@ -106,7 +106,7 @@ eksctl create cluster \
 #### Suggestions for Naming
 
 * CLUSTER_NAME: Choose a distinctive cluster name.
-* KUBERNETES_VERSION: For now, we only support the latest version of Kubernetes in EKS, which is 1.21.
+* KUBERNETES_VERSION: For now, we only support the latest version of Kubernetes in EKS, which is 1.23.
 * NODEGROUP_NAME: Choose a distinctive node group name.
 * NODE_TYPE: The recommendation from our performance team is to use the r5.large node type for development purposes.
 * NUMBER_OF_NODES: Total number of nodes running not only MarkLogic database, but also nodes running other applications.
