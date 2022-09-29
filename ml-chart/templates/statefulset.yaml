@@ -196,7 +196,7 @@ spec:
           emptyDir:
             medium: HugePages-2Mi
         {{- end }}
-        {{- if .Values.hugepages2Mi.enabled }}
+        {{- if .Values.hugepages1Gi.enabled }}
         - name: hugepage-1gi
           emptyDir:
             medium: HugePages-1Gi
