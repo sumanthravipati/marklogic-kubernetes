@@ -44,23 +44,23 @@ image:
 hugepages2Mi:
   enabled: false
   mountPath: ""
-hugepages1Gi:
-  enabled: false
-  mountPath: ""
 
+hugepages1Gi:
+  enabled: true
+  mountPath: /hugespages-1Gi
+
+resources: 
 # Marklogic pods' resource requests and limits
 # ref: https://kubernetes.io/docs/user-guide/compute-resources/
 # requests:
 #   memory: "3000Mi"
 #   cpu: "1000m"
 
-# limits:
+  limits:
 #   memory: "3000Mi"
 #   cpu: "1000m"
 #   hugepages-2Mi: "100Mi"
-#   hugepages-1Gi: "2Gi"
-resources: {}
-
+    hugepages-1Gi: "2Gi"
 
 # Configure Marklogic Admin Username and Password
 auth:
