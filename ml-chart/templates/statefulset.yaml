@@ -184,6 +184,10 @@ spec:
           hostPath:
             path: /usr/share/zoneinfo/Europe/Paris
             type: File
+        {{- if .Values.hugepages1Gi.enabled }}
+        - name: hugepage1gi
+          emptyDir:
+            medium: HugePages-1Gi
     volumeMounts:
         - name: tz-config
           mountPath: /etc/localtime
@@ -195,12 +199,7 @@ spec:
         - name: hugepage2mi
           emptyDir:
             medium: HugePages-2Mi
-        {{- end }}
-        {{- if .Values.hugepages1Gi.enabled }}
-        - name: hugepage1gi
-          emptyDir:
-            medium: HugePages-1Gi
-        {{- end }}      
+        {{- end }}     
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
