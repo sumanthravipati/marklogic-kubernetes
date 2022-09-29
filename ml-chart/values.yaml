@@ -38,15 +38,27 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+## Manage HugePages 
+## ref: https://v1-23.docs.kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/
+
+hugepages2Mi:
+  enabled: false
+  mountPath: ""
+hugepages1Gi:
+  enabled: false
+  mountPath: ""
 
 # Marklogic pods' resource requests and limits
 # ref: https://kubernetes.io/docs/user-guide/compute-resources/
 # requests:
 #   memory: "3000Mi"
 #   cpu: "1000m"
+
 # limits:
 #   memory: "3000Mi"
 #   cpu: "1000m"
+#   hugepages-2Mi: "100Mi"
+#   hugepages-1Gi: "2Gi"
 resources: {}
 
 

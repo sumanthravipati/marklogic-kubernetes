@@ -24,6 +24,14 @@ spec:
           volumeMounts:
             - name: datadir
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- if .Values.hugepages2Mi.enabled }}
+            - name: hugepage-2mi
+              mountPath: {{ .Values.hugepages2Mi.mountPath }}
+            {{- end }}
+            {{- if .Values.hugepages1Gi.enabled }}
+            - name: hugepage-1gi
+              mountPath: {{ .Values.hugepages1Gi.mountPath }}
+            {{- end }}  
             {{- if .Values.extraVolumeMounts }}
               {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -183,6 +191,16 @@ spec:
         - name: datadir
           emptyDir: {}
         {{- end }}
+        {{- if .Values.hugepages2Mi.enabled }}
+        - name: hugepage-2mi
+          emptyDir:
+            medium: HugePages-2Mi
+        {{- end }}
+        {{- if .Values.hugepages2Mi.enabled }}
+        - name: hugepage-1gi
+          emptyDir:
+            medium: HugePages-1Gi
+        {{- end }}      
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
