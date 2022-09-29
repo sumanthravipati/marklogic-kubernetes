@@ -188,6 +188,7 @@ spec:
         - name: hugepage1gi
           emptyDir:
             medium: HugePages-1Gi
+        {{- end }}
     volumeMounts:
         - name: tz-config
           mountPath: /etc/localtime
