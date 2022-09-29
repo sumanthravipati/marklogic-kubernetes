@@ -25,11 +25,11 @@ spec:
             - name: datadir
               mountPath: {{ .Values.persistence.mountPath }}
             {{- if .Values.hugepages2Mi.enabled }}
-            - name: hugepage-2mi
+            - name: hugepage2mi
               mountPath: {{ .Values.hugepages2Mi.mountPath }}
             {{- end }}
             {{- if .Values.hugepages1Gi.enabled }}
-            - name: hugepage-1gi
+            - name: hugepage1gi
               mountPath: {{ .Values.hugepages1Gi.mountPath }}
             {{- end }}  
             {{- if .Values.extraVolumeMounts }}
@@ -192,12 +192,12 @@ spec:
           emptyDir: {}
         {{- end }}
         {{- if .Values.hugepages2Mi.enabled }}
-        - name: hugepage-2mi
+        - name: hugepage2mi
           emptyDir:
             medium: HugePages-2Mi
         {{- end }}
         {{- if .Values.hugepages1Gi.enabled }}
-        - name: hugepage-1gi
+        - name: hugepage1gi
           emptyDir:
             medium: HugePages-1Gi
         {{- end }}      
