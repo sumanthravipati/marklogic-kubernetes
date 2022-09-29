@@ -47,7 +47,7 @@ hugepages2Mi:
 
 hugepages1Gi:
   enabled: true
-  mountPath: /hugespages-1Gi
+  mountPath: "/dev/hugepages"
 
 resources: 
 # Marklogic pods' resource requests and limits
