@@ -798,7 +798,7 @@ ml-lb:
   ## Service configuration
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/
   service:
-    type: NodePort   # can be 'LoadBalancer'
+    type: NodePort   # can be 'ClusterIP, NodePort or LoadBalancer'
 
     ## Service ClusterIP
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/
