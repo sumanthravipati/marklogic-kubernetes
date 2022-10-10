@@ -388,6 +388,7 @@ ml-lb:
   ## HAProxy daemon configuration
   # ref: https://www.haproxy.org/download/2.2/doc/configuration.txt
   config: |
+    {{- $replicas := int .Values.global.replicaCount }}
     global
       log stdout format raw local0
       maxconn 1024
@@ -457,10 +458,9 @@ ml-lb:
       option forwardfor
       #http-request replace-path ^/console(/.*) /\1
       cookie SERVER insert indirect nocache
-      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-0-8000
-      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-1-8000
-      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-2-8000
-
+      {{- range $i := until $replicas }}
+      server ml-{{ $i }} {{ .Values.mlbackend.mlreleasename }}-{{ $i }}.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8000 check resolvers dns init-addr none cookie ml-{{ $i }}-8000
+      {{- end }}
     ## Admin UI
 
     frontend ml-test-admin
@@ -474,9 +474,9 @@ ml-lb:
       balance uri
       #http-request replace-path /admin(/)?(.*) /\2
       cookie SERVER insert indirect nocache
-      server ml-0 {{ .Values.mlbackend.mlreleasename }}-0.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-0-8001
-      server ml-1 {{ .Values.mlbackend.mlreleasename }}-1.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-1-8001
-      server ml-2 {{ .Values.mlbackend.mlreleasename }}-2.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-2-8001
+      {{- range $i := until $replicas }}
+      server ml-{{ $i }} {{ .Values.mlbackend.mlreleasename }}-{{ $i }}.{{ .Values.mlbackend.mlreleasename }}-headless.{{ .Values.mlbackend.mlnamespace }}.svc.cluster.local:8001 check resolvers dns init-addr none cookie ml-{{ $i }}-8001
+      {{- end }}
 
     ## Hello-World ##
 
