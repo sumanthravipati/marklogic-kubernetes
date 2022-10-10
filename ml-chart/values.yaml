@@ -380,6 +380,8 @@ ml-lb:
 
 ## Define FQDN of ml hosts (see config file)
   mlbackend:
+    ## !!! Has to be equal to number of ML replicas !!!
+    replicaCount: 3 
     mlnamespace: ml
     mlreleasename: ml-cluster-marklogic
 
