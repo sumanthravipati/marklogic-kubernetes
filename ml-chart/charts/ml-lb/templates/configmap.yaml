@@ -20,3 +20,4 @@ data:
 {{- range $key, $val := .Values.includes }}
   {{ $key }}: | {{ $val | nindent 4 }}
 {{- end }}
+{{- end }}
