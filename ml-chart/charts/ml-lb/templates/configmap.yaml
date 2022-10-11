@@ -1,4 +1,9 @@
----
+{{- $replicas := int .Values.mlbackend.replicaCount }}
+{{- $fullname := .Values.mlbackend.mlreleasename }}
+{{- $service := .Values.mlbackend.mlreleasename }}
+{{- $namespace := .Values.mlbackend.mlnamespace }}
+## HAProxy daemon configuration
+# ref: https://www.haproxy.org/download/2.2/doc/configuration.txt
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,16 +13,3 @@ metadata:
   {{- include "haproxy.labels" . | nindent 4 }}
 data:
 {{ (tpl (.Files.Glob "configs/*").AsConfig . ) | indent 2 }}
-
-{{- if .Values.includes }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: includes
-  namespace: {{ template "haproxy.namespace" . }}
-data:
-{{- range $key, $val := .Values.includes }}
-  {{ $key }}: | {{ $val | nindent 4 }}
-{{- end }}
-{{- end }}
