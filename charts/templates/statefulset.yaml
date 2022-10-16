@@ -91,14 +91,6 @@ spec:
           volumeMounts:
             - name: datadir
               mountPath: {{ .Values.persistence.mountPath }}
-            {{- if .Values.hugepages2Mi.enabled }}
-            - name: hugepage2mi
-              mountPath: {{ .Values.hugepages2Mi.mountPath }}
-            {{- end }}
-            {{- if .Values.hugepages1Gi.enabled }}
-            - name: hugepage1gi
-              mountPath: {{ .Values.hugepages1Gi.mountPath }}
-            {{- end }}  
             {{- if .Values.extraVolumeMounts }}
               {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -281,36 +273,16 @@ spec:
         - name: {{ include "marklogic.fullname" . }}-registry
       {{- end }}
       volumes:
-<<<<<<< HEAD
-        - name: tz-config
-          hostPath:
-            path: /usr/share/zoneinfo/Europe/Paris
-            type: File
-        {{- if .Values.hugepages1Gi.enabled }}
-        - name: hugepage1gi
-          emptyDir:
-            medium: HugePages-1Gi
-        {{- end }}
-    volumeMounts:
-        - name: tz-config
-          mountPath: /etc/localtime
-=======
         {{- if .Values.logCollection.enabled }}
         - name: {{ include "marklogic.fullname" . }}-fb-config-map
           configMap:
             name: {{ include "marklogic.fullname" . }}-fb-config-map
         {{- end }}
       {{- if or (not .Values.persistence.enabled) (.Values.extraVolumes) }}
->>>>>>> tech-summit
         {{- if not .Values.persistence.enabled }}
         - name: datadir
           emptyDir: {}
         {{- end }}
-        {{- if .Values.hugepages2Mi.enabled }}
-        - name: hugepage2mi
-          emptyDir:
-            medium: HugePages-2Mi
-        {{- end }}     
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
