@@ -38,14 +38,14 @@ spec:
               log "Info: [initContainer] Skipping creation of group $MARKLOGIC_GROUP as $POD_NAME is not the first node in the group."
               exit 0
             fi
-            HOST_RESP_CODE=`curl --anyauth -m 20 -s -o /dev/null -w "%{http_code}" -X GET http://${MARKLOGIC_BOOTSTRAP_HOST}:8002/manage/v2/hosts --anyauth --user ${MARKLOGIC_ADMIN_USERNAME}:${MARKLOGIC_ADMIN_PASSWORD}`
+            HOST_RESP_CODE=`curl --anyauth --user ${MARKLOGIC_ADMIN_USERNAME}:${MARKLOGIC_ADMIN_PASSWORD} -m 20 -s -o /dev/null -w "%{http_code}" -X GET http://${MARKLOGIC_BOOTSTRAP_HOST}:8002/manage/v2/hosts`
             if [[ ${HOST_RESP_CODE} -ne 200 ]]; then
               log "Error: [initContainer] Bootstrap host $MARKLOGIC_BOOTSTRAP_HOST not found, exiting Init container."
               exit 1
             fi
             GROUP_CFG_TEMPLATE='{"group-name":"%s"}'
             GROUP_CFG=$(printf "$GROUP_CFG_TEMPLATE" "$MARKLOGIC_GROUP")
-            GROUP_RESP_CODE=`curl --anyauth -m 20 -s -o /dev/null -w "%{http_code}" -X GET http://${MARKLOGIC_BOOTSTRAP_HOST}:8002/manage/v2/groups/${MARKLOGIC_GROUP} --anyauth --user ${MARKLOGIC_ADMIN_USERNAME}:${MARKLOGIC_ADMIN_PASSWORD}`
+            GROUP_RESP_CODE=`curl --anyauth --user ${MARKLOGIC_ADMIN_USERNAME}:${MARKLOGIC_ADMIN_PASSWORD} -m 20 -s -o /dev/null -w "%{http_code}" -X GET http://${MARKLOGIC_BOOTSTRAP_HOST}:8002/manage/v2/groups/${MARKLOGIC_GROUP}`
             if [[ ${GROUP_RESP_CODE} -eq 200 ]]; then
               log "Info: [initContainer] Skipping creation of group $MARKLOGIC_GROUP as it already exists on the MarkLogic cluster." 
               exit 0
