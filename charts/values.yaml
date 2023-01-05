@@ -50,10 +50,6 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-<<<<<<< HEAD
-## Manage HugePages 
-## ref: https://v1-23.docs.kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/
-=======
 # Init container image parameters
 initContainerImage:
   repository: curlimages/curl
@@ -66,7 +62,6 @@ imagePullSecret: {}
 # registry: "https://index.docker.io/v1/"
 # username: "your username"
 # password: "your password"
->>>>>>> tech-summit
 
 hugepages2Mi:
   enabled: false
@@ -181,7 +176,6 @@ startupProbe:
   failureThreshold: 30
   successThreshold: 1
 
-<<<<<<< HEAD
 ### Deploy HAProxy as ML LB ###
 
 
@@ -717,7 +711,6 @@ ml-lb:
       # - secretName: chart-example-tls
       #   hosts:
       #     - haproxy.domain.com
-=======
 # Configure options for log collection
 # Log collection will collect all logs for each file type enabled, parse them, 
 # And export them to a logging backend specified in the outputs section below
@@ -748,4 +741,3 @@ logCollection:
       #   HTTP_Passwd admin
       # Documentation on how to set up output can be found here: https://docs.fluentbit.io/manual/pipeline/outputs
       # Configure desired output below
->>>>>>> tech-summit
