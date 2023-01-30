@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: datadir
+  namespace: default
+  labels: 
+    app.kubernetes.io/instance: ml-test
+    app.kubernetes.io/name: marklogic
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 10Gi
