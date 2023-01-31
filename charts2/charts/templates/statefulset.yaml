@@ -92,7 +92,42 @@ spec:
         - configMapRef:
             name: {{ include "marklogic.fullname" . }}
       {{- end }}
+      imagePullSecrets:
+        - name: regcred-data  
       containers:
+        - image: ml-docker-dev.marklogic.com/marklogic/marklogic-server-centos-qa:10.0-9.5-centos-1.0.0
+          name: qa-harness
+          resources:
+            limits:
+              cpu: "2"
+              memory: 6000Mi
+            requests:
+              cpu: "2"
+              memory: 6000Mi
+          command:
+            - "/usr/sbin/init"
+          volumeMounts:
+            - mountPath: /usr/local/maven
+              name: maven
+            - mountPath: /usr/local/sbin
+              name: mladmin
+            - mountPath: /project/engineering
+              name: project-engineering
+            - mountPath: /project/qa
+              name: project-qa
+            - mountPath: /tmp/.ssh
+              name: ssh
+            - mountPath: /space
+              name: main-vol
+            - mountPath: /home/builder/java
+              name: java-home
+            - mountPath: /home/builder/.aws
+              name: aws-creds
+
+
+
+
+
         - name: marklogic-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy}}
@@ -277,11 +312,44 @@ spec:
       dnsConfig:
         searches:
           - {{ include "marklogic.headlessURL" . }}
-      {{- if .Values.imagePullSecret }}
-      imagePullSecrets:
-        - name: {{ include "marklogic.fullname" . }}-registry
-      {{- end }}
+      #{{- if .Values.imagePullSecret }}
+   
+      #  - name: {{ include "marklogic.fullname" . }}-registry
+      #{{- end }}
       volumes:
+        - hostPath:
+            path: /usr/local/maven
+            type: ""
+          name: maven
+        - hostPath:
+            path: /usr/local/sbin
+            type: ""
+          name: mladmin
+        - hostPath:
+            path: /project/engineering
+            type: ""
+          name: project-engineering
+        - hostPath:
+            path: /project/qa
+            type: ""
+          name: project-qa
+        - hostPath:
+            path: /home/builder/.ssh
+            type: ""
+          name: ssh
+        - hostPath:
+            path: /space
+            type: ""
+          name: main-vol
+        - hostPath:
+            path: /home/builder/java
+            type: ""
+          name: java-home
+        - hostPath:
+            path: /home/builder/.aws
+            type: ""
+          name: aws-creds
+
         - name: datadir
           persistentVolumeClaim:
             claimName: datadir
