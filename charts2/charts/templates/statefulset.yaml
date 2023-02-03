@@ -95,17 +95,42 @@ spec:
       imagePullSecrets:
         - name: regcred-data  
       containers:
-        - image: ml-docker-dev.marklogic.com/marklogic/marklogic-server-centos-qa:10.0-9.5-centos-1.0.0
-          name: qa-harness
-          resources:
-            limits:
-              cpu: "2"
-              memory: 6000Mi
-            requests:
-              cpu: "2"
-              memory: 6000Mi
-          command:
-            - "/usr/sbin/init"
+        # - image: ml-docker-dev.marklogic.com/marklogic/marklogic-server-centos-qa:10.0-9.5-centos-1.0.0
+        #   name: qa-harness
+        #   resources:
+        #     limits:
+        #       cpu: "2"
+        #       memory: 6000Mi
+        #     requests:
+        #       cpu: "2"
+        #       memory: 6000Mi
+        #   command:
+        #     - "/usr/sbin/init"
+        #   volumeMounts:
+        #     - mountPath: /usr/local/maven
+        #       name: maven
+        #     - mountPath: /usr/local/sbin
+        #       name: mladmin
+        #     - mountPath: /project/engineering
+        #       name: project-engineering
+        #     - mountPath: /project/qa
+        #       name: project-qa
+        #     - mountPath: /tmp/.ssh
+        #       name: ssh
+        #     - mountPath: /space
+        #       name: main-vol
+        #     - mountPath: /home/builder/java
+        #       name: java-home
+        #     - mountPath: /home/builder/.aws
+        #       name: aws-creds
+
+
+
+
+
+        - name: marklogic-server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy}}
           volumeMounts:
             - mountPath: /usr/local/maven
               name: maven
@@ -123,15 +148,6 @@ spec:
               name: java-home
             - mountPath: /home/builder/.aws
               name: aws-creds
-
-
-
-
-
-        - name: marklogic-server
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy}}
-          volumeMounts:
             - name: datadir
               mountPath: {{ .Values.persistence.mountPath }}
             {{- if .Values.extraVolumeMounts }}
@@ -168,6 +184,14 @@ spec:
               name: admin
             - containerPort: 8002
               name: manage
+            - containerPort: 11111
+              name: jppf1
+            - containerPort: 11443
+              name: jppf2
+            - containerPort: 11199
+              name: jppf3
+            - containerPort: 12001
+              name: qa-lb3
             {{- if .Values.extraContainerPorts }}
               {{- toYaml .Values.extraContainerPorts | nindent 12 }}
             {{- end }}
@@ -183,7 +207,7 @@ spec:
 
                     log () {
                       local TIMESTAMP=$(date +"%Y-%m-%d %T.%3N")
-                      echo "${TIMESTAMP}  $@" > /proc/$pid/fd/1
+                      # echo "${TIMESTAMP}  $@" > /proc/$pid/fd/1
                     }
                     log "Info: [poststart] Begin Poststart Hook Execution"
                     if [[ $POD_NAME != *-0 ]]; then
@@ -210,7 +234,7 @@ spec:
                   - |
                     log () {
                       local TIMESTAMP=$(date +"%Y-%m-%d %T.%3N")
-                      echo "${TIMESTAMP} $@" > /proc/$pid/fd/1
+                      # echo "${TIMESTAMP} $@" > /proc/$pid/fd/1
                     }
 
                     pid=$(ps aux | grep -i '/bin/bas[h] /usr' | awk {'print $2'})
@@ -304,7 +328,13 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          resources: {{- toYaml .Values.logCollection.resources | nindent 12 }}
+          resources:
+            requests:
+              memory: "10000Mi"
+              cpu: "2000m"
+            limits:
+              memory: "19000Mi"
+              cpu: "2000m"
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8}}
@@ -351,8 +381,7 @@ spec:
           name: aws-creds
 
         - name: datadir
-          persistentVolumeClaim:
-            claimName: datadir
+          emptyDir: {}
         {{- if .Values.logCollection.enabled }}
         - name: {{ include "marklogic.fullname" . }}-fb-config-map
           configMap:
