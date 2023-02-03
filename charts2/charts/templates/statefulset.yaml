@@ -203,11 +203,8 @@ spec:
                   - bash
                   - '-c'
                   - |
-                    pid=$(ps aux | grep -i '/bin/bas[h] /usr' | awk {'print $2'})
-
                     log () {
                       local TIMESTAMP=$(date +"%Y-%m-%d %T.%3N")
-                      # echo "${TIMESTAMP}  $@" > /proc/$pid/fd/1
                     }
                     log "Info: [poststart] Begin Poststart Hook Execution"
                     if [[ $POD_NAME != *-0 ]]; then
@@ -234,10 +231,8 @@ spec:
                   - |
                     log () {
                       local TIMESTAMP=$(date +"%Y-%m-%d %T.%3N")
-                      # echo "${TIMESTAMP} $@" > /proc/$pid/fd/1
                     }
 
-                    pid=$(ps aux | grep -i '/bin/bas[h] /usr' | awk {'print $2'})
                     log "Info: [prestop] Prestop Hook Execution"
 
                     my_host=$(hostname -f)
@@ -339,9 +334,9 @@ spec:
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8}}
       {{- end }}
-      dnsConfig:
-        searches:
-          - {{ include "marklogic.headlessURL" . }}
+      # dnsConfig:
+      #   searches:
+      #     - {{ include "marklogic.headlessURL" . }}
       #{{- if .Values.imagePullSecret }}
    
       #  - name: {{ include "marklogic.fullname" . }}-registry
