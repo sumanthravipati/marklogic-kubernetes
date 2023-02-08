@@ -1,0 +1,11 @@
+## HAProxy daemon configuration
+# ref: https://www.haproxy.org/download/2.2/doc/configuration.txt
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "haproxy.fullname" . }}
+  namespace: {{ template "haproxy.namespace" . }}
+  labels:
+  {{- include "haproxy.labels" . | nindent 4 }}
+data:
+{{ (tpl (.Files.Glob "configs/*").AsConfig . ) | indent 2 }}
