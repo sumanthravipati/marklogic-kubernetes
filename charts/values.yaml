@@ -19,7 +19,7 @@ bootstrapHostName: ""
 # Marklogic image parameters
 image:
   repository: ml-docker-dev.marklogic.com/marklogic/marklogic-server-centos-qa
-  tag: 11.0.20230213-centos-1.0.1
+  tag: 11.0.20230211-centos-1.0.1
   pullPolicy: IfNotPresent
 
 # Init container image parameters
