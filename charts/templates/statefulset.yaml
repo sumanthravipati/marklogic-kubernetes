@@ -141,7 +141,6 @@ spec:
 
                     log () {
                       local TIMESTAMP=$(date +"%Y-%m-%d %T.%3N")
-                      echo "${TIMESTAMP}  $@" > /proc/$pid/fd/1
                     }
                     log "Info: [poststart] Begin Poststart Hook Execution"
                     if [[ $POD_NAME != *-0 ]]; then
@@ -168,7 +167,6 @@ spec:
                   - |
                     log () {
                       local TIMESTAMP=$(date +"%Y-%m-%d %T.%3N")
-                      echo "${TIMESTAMP} $@" > /proc/$pid/fd/1
                     }
 
                     pid=$(ps aux | grep -i '/bin/bas[h] /usr' | awk {'print $2'})
