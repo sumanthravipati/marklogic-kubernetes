@@ -127,14 +127,6 @@ spec:
               name: admin
             - containerPort: 8002
               name: manage
-            - containerPort: 11111
-              name: jppf1
-            - containerPort: 11443
-              name: jppf2
-            - containerPort: 11199
-              name: jppf3
-            - containerPort: 12001
-              name: qa-lb3
             {{- if .Values.extraContainerPorts }}
               {{- toYaml .Values.extraContainerPorts | nindent 12 }}
             {{- end }}
