@@ -57,6 +57,8 @@ resources: {}
 nameOverride: ""
 fullnameOverride: ""
 
+headlessServiceName: "marklogic-headless"
+
 # Configure Marklogic Admin Username and Password
 auth:
   adminUsername: "admin"

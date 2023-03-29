@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "marklogic.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "marklogic.headlessServiceName" . }}
+  serviceName: {{ .Values.headlessServiceName }}
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}

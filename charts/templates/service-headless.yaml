@@ -1,7 +1,10 @@
+{{- $serviceExist := (lookup "v1" "Service" .Release.Namespace .Values.headlessServiceName ) }}
+{{- if not $serviceExist }}
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "marklogic.headlessServiceName" .}}
+  name: {{ .Values.headlessServiceName }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "marklogic.labels" . | nindent 4 }}
@@ -38,3 +41,4 @@ spec:
     {{- if .Values.service.additionalPorts }}
       {{- toYaml .Values.service.additionalPorts | nindent 4 }}
     {{- end }}
+{{- end }}
