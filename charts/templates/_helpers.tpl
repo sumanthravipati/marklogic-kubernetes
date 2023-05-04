@@ -62,7 +62,6 @@ Selector labels
 */}}
 {{- define "marklogic.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "marklogic.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
