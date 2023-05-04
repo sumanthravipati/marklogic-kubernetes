@@ -18,6 +18,7 @@ spec:
       labels:
         {{- include "marklogic.selectorLabels" . | nindent 8 }}
     spec:
+      subdomain: ml1-marklogic-headless
       serviceAccountName: {{ include "marklogic.serviceAccountName" . }}
       {{- with .Values.affinity }}
       affinity: {{- toYaml . | nindent 8}}
