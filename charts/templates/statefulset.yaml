@@ -1,7 +1,9 @@
+{{- $replicaCount := .Values.splitCount }}
+{{- range $i := until (int $replicaCount) }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "marklogic.fullname" . }}
+  name: ml{{ $i }}-marklogic
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "marklogic.labels" . | nindent 4 }}
@@ -348,3 +350,4 @@ spec:
     {{- toYaml .Values.additionalVolumeClaimTemplates | nindent 4 }}
     {{- end }}
   {{- end }}
+{{- end }}
