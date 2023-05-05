@@ -1,40 +1,58 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "marklogic.headlessServiceName" .}}
-  namespace: {{ .Release.Namespace }}
+  name: ml1-marklogic-headless
+  namespace: default
   labels:
-    {{- include "marklogic.labels" . | nindent 4 }}
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: marklogic
+    app.kubernetes.io/version: 11.0.2
+    helm.sh/chart: marklogic-1.0.0
+  annotations:
+    meta.helm.sh/release-name: ml1
+    meta.helm.sh/release-namespace: default
 spec:
-  clusterIP: None
-  publishNotReadyAddresses: true
-  selector:
-    {{- include "marklogic.selectorLabels" . | nindent 4 }}
   ports:
     - name: health-check
+      protocol: TCP
       port: 7997
       targetPort: 7997
-      protocol: TCP
     - name: xdqp-port1
+      protocol: TCP
       port: 7998
       targetPort: 7998
-      protocol: TCP
     - name: xdqp-port2
-      port: 7999
-      targetPort: 7999              
       protocol: TCP
+      port: 7999
+      targetPort: 7999
     - name: app-services
+      protocol: TCP
       port: 8000
       targetPort: 8000
-      protocol: TCP
     - name: admin
+      protocol: TCP
       port: 8001
       targetPort: 8001
-      protocol: TCP
     - name: manage
+      protocol: TCP
       port: 8002
       targetPort: 8002
+    - name: jppf1
       protocol: TCP
-    {{- if .Values.service.additionalPorts }}
-      {{- toYaml .Values.service.additionalPorts | nindent 4 }}
-    {{- end }}
+      port: 11111
+      targetPort: 11111
+    - name: jppf2
+      protocol: TCP
+      port: 11443
+      targetPort: 11443
+    - name: jppf3
+      protocol: TCP
+      port: 11199
+      targetPort: 11199
+    - name: qa-lb3
+      protocol: TCP
+      port: 12001
+      targetPort: 12001
+  selector:
+    app.kubernetes.io/name: marklogic
+  type: ClusterIP
