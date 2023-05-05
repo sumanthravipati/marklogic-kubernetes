@@ -5,24 +5,24 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: ml{{ $i }}-marklogic
-  namespace: {{ $root.Release.Namespace }}
+  namespace: {{ $root.Chart.Namespace }}
   labels:
-    {{- include "marklogic.labels" . | nindent 4 }}
+    {{- include "marklogic.labels" $root | nindent 4 }}
 spec:
-  serviceName: {{ include "marklogic.headlessServiceName" . }}
+  serviceName: {{ include "marklogic.headlessServiceName" $root }}
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
   selector:
     matchLabels:
-      {{- include "marklogic.selectorLabels" . | nindent 6 }}
+      {{- include "marklogic.selectorLabels" $root | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "marklogic.selectorLabels" . | nindent 8 }}
+        {{- include "marklogic.selectorLabels" $root | nindent 8 }}
     spec:
       subdomain: ml1-marklogic-headless
-      serviceAccountName: {{ include "marklogic.serviceAccountName" . }}
+      serviceAccountName: {{ include "marklogic.serviceAccountName" $root }}
       {{- with .Values.affinity }}
       affinity: {{- toYaml . | nindent 8}}
       {{- end }}
@@ -89,7 +89,7 @@ spec:
               fieldPath: metadata.name
         envFrom:
         - configMapRef:
-            name: {{ include "marklogic.fullname" . }}
+            name: {{ include "marklogic.fullname" $root }}
       {{- end }}
       containers:
         - name: marklogic-server
@@ -127,7 +127,7 @@ spec:
               value: {{ .Values.realm  | quote }}
           envFrom:
             - configMapRef:
-                name: {{ include "marklogic.fullname" . }}
+                name: {{ include "marklogic.fullname" $root }}
           ports:
             - name: health-check
               containerPort: 7997
@@ -289,7 +289,7 @@ spec:
             {{- if .Values.additionalVolumeMounts }}
               {{- toYaml .Values.additionalVolumeMounts | nindent 12 }}
             {{- end }}
-            - name: {{ include "marklogic.fullname" . }}-fb-config-map
+            - name: {{ include "marklogic.fullname" $root }}-fb-config-map
               mountPath: /fluent-bit/etc/
           env:
             - name: POD_NAME
@@ -309,15 +309,15 @@ spec:
       {{- end }}
       dnsConfig:
         searches:
-          - {{ include "marklogic.headlessURL" . }}
+          - {{ include "marklogic.headlessURL" $root }}
       volumes:
         - name: mladmin-secrets
           secret:
-            secretName: {{ include "marklogic.authSecretNameToMount" . }}
+            secretName: {{ include "marklogic.authSecretNameToMount" $root }}
         {{- if .Values.logCollection.enabled }}
-        - name: {{ include "marklogic.fullname" . }}-fb-config-map
+        - name: {{ include "marklogic.fullname" $root }}-fb-config-map
           configMap:
-            name: {{ include "marklogic.fullname" . }}-fb-config-map
+            name: {{ include "marklogic.fullname" $root }}-fb-config-map
         {{- end }}
         {{- if not .Values.persistence.enabled }}
         - name: datadir
@@ -331,7 +331,7 @@ spec:
     - metadata:
         name: datadir
         labels: 
-          {{- include "marklogic.selectorLabels" . | nindent 10 }}
+          {{- include "marklogic.selectorLabels" $root | nindent 10 }}
         {{- if .Values.persistence.annotations }}
         annotations:
           {{- toYaml .Values.persistence.annotations | nindent 10 }}
