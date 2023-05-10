@@ -3,9 +3,6 @@ kind: Service
 metadata:
   name: ml1-marklogic-headless
   namespace: default
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: marklogic
-    app.kubernetes.io/version: 11.0.2
 spec:
   ports:
     - name: health-check

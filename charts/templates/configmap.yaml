@@ -11,7 +11,7 @@ data:
 {{- else }}
   MARKLOGIC_BOOTSTRAP_HOST: {{ include "marklogic.fqdn" . }}
 {{- end }}
-  MARKLOGIC_FQDN_SUFFIX: {{ include "marklogic.headlessURL" . }}
+  # MARKLOGIC_FQDN_SUFFIX: {{ include "marklogic.headlessURL" . }}
   MARKLOGIC_INIT: "true"
   MARKLOGIC_JOIN_CLUSTER: "true"
   MARKLOGIC_GROUP: {{ .Values.group.name }}
