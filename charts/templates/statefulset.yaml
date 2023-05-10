@@ -9,7 +9,6 @@ metadata:
   labels:
     {{- include "marklogic.labels" $root | nindent 4 }}
 spec:
-  serviceName: {{ include "marklogic.headlessServiceName" $root }}
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
@@ -21,7 +20,6 @@ spec:
       labels:
         {{- include "marklogic.selectorLabels" $root | nindent 8 }}
     spec:
-      subdomain: ml1-marklogic-headless
       serviceAccountName: {{ include "marklogic.serviceAccountName" $root }}
       {{- with .Values.affinity }}
       affinity: {{- toYaml . | nindent 8}}
@@ -307,9 +305,6 @@ spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets: {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- end }}
-      dnsConfig:
-        searches:
-          - {{ include "marklogic.headlessURL" $root }}
       volumes:
         - name: mladmin-secrets
           secret:
