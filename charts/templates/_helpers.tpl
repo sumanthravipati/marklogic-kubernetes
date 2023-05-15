@@ -98,5 +98,5 @@ Use the auth.secretName value if set, otherwise use the name from marklogic.auth
 Fully qualified domain name
 */}}
 {{- define "marklogic.fqdn" -}}
-{{- printf "%s-0.%s.%s.svc.%s" (include "marklogic.fullname" .) ml1-marklogic-headless .Release.Namespace .Values.clusterDomain }}
+{{- printf "%s-0.%s.%s.svc.%s" (include "marklogic.fullname" .) "ml1-marklogic-headless" .Release.Namespace .Values.clusterDomain }}
 {{- end}}
