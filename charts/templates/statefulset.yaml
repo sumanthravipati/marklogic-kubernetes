@@ -1,3 +1,19 @@
+{{- $allGroups := list }}
+{{- $newGroup := .Values.group.name }}
+{{- range $i, $v := (lookup "apps/v1" "StatefulSet" "" "").metadata.annotations }}
+  {{- $groupName := get $v.metadata.annotations "marklogic.com/group-name" }}
+  {{ $allGroups = append $allGroups $groupName }}
+  {{- if has $newGroup $allGroups }}
+    # has duplicate
+    {{- fail "You current deployment's group name is already in the cluster, please choose another group name "}}
+  {{- end}}
+  {{- $groupName := get $v.metadata.annotations "marklogic.com/group-name" }}
+  {{ $allGroups = append $allGroups $groupName }}
+  {{- if has $newGroup $allGroups }}
+    # has duplicate
+    {{- fail "You current deployment's group name is already in the cluster, please choose another group name "}}
+  {{- end}}
+{{- end }}
 {{- include "marklogic.checkInputError" . }}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -6,6 +22,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "marklogic.labels" . | nindent 4 }}
+  annotations:
+    {{- include "marklogic.annotations" . | nindent 4 }}
 spec:
   serviceName: {{ include "marklogic.headlessServiceName" . }}
   replicas: {{ .Values.replicaCount }}

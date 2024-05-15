@@ -52,6 +52,26 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "marklogic.annotations" -}}
+marklogic.com/group-name: {{ .Values.group.name | quote }}
+marklogic.com/group-xdqp-enabled: {{ .Values.group.enableXdqpSsl | quote }}
+{{- $bootStrapHost := trim .Values.bootstrapHostName }}
+{{- if ne $bootStrapHost "" }}
+marklogic.com/cluster-name: {{ .Values.bootstrapHostName }}
+{{- else }}
+marklogic.com/cluster-name: {{ include "marklogic.fqdn" . }}
+{{- end }}
+{{- end }}
+
+{{/*
+{{- end }}
+
+{{/*
+{{- end }}
+
+{{/*
+{{- end }}
+
 {{/*
 Selector labels
 */}}
