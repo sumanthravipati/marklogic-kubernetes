@@ -1,0 +1,15 @@
+replicaCount: 1
+
+auth:
+  adminUsername: "admin"
+  adminPassword: "admin"
+
+persistence:
+  enabled: true
+
+# fullnameOverride: "mlc"
+
+group:
+  name: "enode"
+
+allowLongHostnames: true
